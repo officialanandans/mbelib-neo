@@ -1,0 +1,12 @@
+# Build artifacts
+/build/
+
+# Tool caches
+/.cache/
+
+# Editor/IntelliSense database generated via CMake Tools
+/compile_commands.json
+
+# OS files
+.DS_Store
+Thumbs.db
