@@ -2,12 +2,13 @@ name: CI
 
 on:
   push:
-    branches: [main, master]
+    branches: [main]
   pull_request:
-    branches: [main, master]
+    branches: [main]
 
 jobs:
   build-test:
+    needs: [format-check, clang-tidy]
     name: ${{ matrix.os }} • preset=${{ matrix.preset }}
     runs-on: ${{ matrix.os }}
     strategy:
@@ -25,6 +26,7 @@ jobs:
         run: ctest --preset ${{ matrix.preset }} -V
 
   sanitize-linux:
+    needs: [format-check, clang-tidy]
     name: linux • Debug • sanitizers
     runs-on: ubuntu-latest
     steps:
@@ -74,6 +76,7 @@ jobs:
           clang-tidy -p build/dev-debug $files
 
   install-and-consume:
+    needs: [format-check, clang-tidy]
     name: install + consume (pkg-config/CMake)
     runs-on: ${{ matrix.os }}
     strategy:
@@ -135,6 +138,7 @@ jobs:
           ./build/consumer
 
   install-and-consume-win:
+    needs: [format-check, clang-tidy]
     name: install + consume (CMake, Windows)
     runs-on: windows-latest
     steps:
