@@ -198,15 +198,13 @@ mbe_decodeImbe4400Parms(char* imbe_d, mbe_parms* cur_mp, mbe_parms* prev_mp) {
     tmpstr[7] = imbe_d[86] + 48;
     b0 = strtol(tmpstr, NULL, 2);
     if (b0 > 207) {
+#ifdef IMBE_DEBUG
         if ((b0 >= 216) && (b0 <= 219)) {
-#ifdef IMBE_DEBUG
             fprintf(stderr, "Silence\n");
-#endif
         } else {
-#ifdef IMBE_DEBUG
             fprintf(stderr, "Invalid fundamental frequency\n");
-#endif
         }
+#endif
         return (1);
     }
 
@@ -252,7 +250,8 @@ mbe_decodeImbe4400Parms(char* imbe_d, mbe_parms* cur_mp, mbe_parms* prev_mp) {
     j = 1;
     k = (K - 1);
     for (i = 1; i <= L; i++) {
-        cur_mp->Vl[i] = bb[1][k];
+        /* Cast via unsigned to avoid sign-extension when 'char' is signed */
+        cur_mp->Vl[i] = (int)(unsigned char)bb[1][k];
         if (j == 3) {
             j = 1;
             if (k > 0) {
@@ -296,7 +295,7 @@ mbe_decodeImbe4400Parms(char* imbe_d, mbe_parms* cur_mp, mbe_parms* prev_mp) {
             k++;
         }
         bm = strtol(tmpstr, NULL, 2);
-        Gm[i] = (*ba2 * ((float)bm - exp2f((*ba1) - 1.0f) + (float)0.5f));
+        Gm[i] = (*ba2 * ((float)bm - exp2f((*ba1) - 1.0f) + 0.5f));
 #ifdef IMBE_DEBUG
         fprintf(stderr, "G%i: %e, %s, %i, ba1: %e, ba2: %e\n", i, Gm[i], tmpstr, bm, *ba1, *ba2);
 #endif

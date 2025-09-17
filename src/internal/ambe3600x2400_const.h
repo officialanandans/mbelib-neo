@@ -29,8 +29,8 @@
  *       avoid multiple-definition hazards under non-traditional build modes.
  */
 
-#ifndef _AMBE3600x2400_CONST_H
-#define _AMBE3600x2400_CONST_H
+#ifndef MBEINT_AMBE3600X2400_CONST_H
+#define MBEINT_AMBE3600X2400_CONST_H
 
 static const float AmbePlusLtable[126] = {
     9,  9,  9,  9,  9,  9,  10, 10, 10, 10, 10, 10, 11, 11, 11, 11, 11, 11, 12, 12, 12, 12, 12, 13, 13, 13,

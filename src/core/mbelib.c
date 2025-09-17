@@ -110,7 +110,7 @@ mbe_rand(void) {
 /** @internal @ingroup mbe_internal */
 static float
 mbe_rand_phase(void) {
-    return mbe_rand() * (((float)M_PI) * 2.0F) - ((float)M_PI);
+    return (mbe_rand() * (((float)M_PI) * 2.0F)) - ((float)M_PI);
 }
 
 /**
@@ -129,6 +129,7 @@ mbe_rand_phase(void) {
  * @return Sum of cosine terms for the current sample.
  */
 /** @internal @ingroup mbe_internal */
+#if defined(MBELIB_STRICT_ORDER)
 static inline float
 mbe_unvoiced_mix_accum_update(float* restrict c, float* restrict s, const float* restrict cd, const float* restrict sd,
                               int count, float noise_scale) {
@@ -186,13 +187,14 @@ mbe_unvoiced_mix_accum_update(float* restrict c, float* restrict s, const float*
         if (noise_scale != 0.0f) {
             sum += noise_scale * mbe_rand();
         }
-        float cpn = c[i] * cd[i] - s[i] * sd[i];
-        float spn = s[i] * cd[i] + c[i] * sd[i];
+        float cpn = (c[i] * cd[i]) - (s[i] * sd[i]);
+        float spn = (s[i] * cd[i]) + (c[i] * sd[i]);
         c[i] = cpn;
         s[i] = spn;
     }
     return sum;
 }
+#endif /* MBELIB_STRICT_ORDER */
 
 /**
  * @brief Compute four successive unvoiced sums and advance oscillator states.
@@ -326,17 +328,17 @@ mbe_unvoiced_mix_block4(float* restrict c, float* restrict s, const float* restr
         const float cdi = cd[i];
         const float sdi = sd[i];
         sum0 += ci;
-        float c1 = ci * cdi - si * sdi;
-        float s1 = si * cdi + ci * sdi;
+        float c1 = (ci * cdi) - (si * sdi);
+        float s1 = (si * cdi) + (ci * sdi);
         sum1 += c1;
-        float c2 = c1 * cdi - s1 * sdi;
-        float s2 = s1 * cdi + c1 * sdi;
+        float c2 = (c1 * cdi) - (s1 * sdi);
+        float s2 = (s1 * cdi) + (c1 * sdi);
         sum2 += c2;
-        float c3 = c2 * cdi - s2 * sdi;
-        float s3 = s2 * cdi + c2 * sdi;
+        float c3 = (c2 * cdi) - (s2 * sdi);
+        float s3 = (s2 * cdi) + (c2 * sdi);
         sum3 += c3;
-        float c4 = c3 * cdi - s3 * sdi;
-        float s4 = s3 * cdi + c3 * sdi;
+        float c4 = (c3 * cdi) - (s3 * sdi);
+        float s4 = (s3 * cdi) + (c3 * sdi);
         c[i] = c4;
         s[i] = s4;
     }
@@ -391,8 +393,8 @@ mbe_add_voiced_block4(float* restrict Ss, const float* restrict W, float amp, fl
     float cc = *c, ss = *s;
     for (int k = 0; k < 4; ++k) {
         cblk[k] = cc;
-        float cpn = cc * cd - ss * sd;
-        float spn = ss * cd + cc * sd;
+        float cpn = (cc * cd) - (ss * sd);
+        float spn = (ss * cd) + (cc * sd);
         cc = cpn;
         ss = spn;
     }
@@ -542,8 +544,8 @@ mbe_spectralAmpEnhance(mbe_parms* cur_mp) {
         float c = 1.0f, s = 0.0f; // angle = 0
         for (l = 1; l <= cur_mp->L; ++l) {
             // advance by w0
-            float cn = c * c_step - s * s_step;
-            float sn = s * c_step + c * s_step;
+            float cn = (c * c_step) - (s * s_step);
+            float sn = (s * c_step) + (c * s_step);
             c = cn;
             s = sn;
             cos_tab[l] = c;
@@ -852,7 +854,7 @@ mbe_synthesizeTonef(float* aout_buf, char* ambe_d, mbe_parms* cur_mp) {
     amplitude = AD * 75.0f; //
     aout_buf_p = aout_buf;
     for (n = 0; n < 160; n++) {
-        *aout_buf_p = (float)(amplitude * (sinf((cur_mp->swn) * step1) / 2.0f + sinf((cur_mp->swn) * step2) / 2.0f));
+        *aout_buf_p = amplitude * (sinf((cur_mp->swn) * step1) / 2.0f + sinf((cur_mp->swn) * step2) / 2.0f);
         *aout_buf_p = *aout_buf_p / 6.0f;
         aout_buf_p++;
         cur_mp->swn++;
@@ -913,7 +915,7 @@ mbe_synthesizeTonefdstar(float* aout_buf, char* ambe_d, mbe_parms* cur_mp, int I
     amplitude = AD * 75.0f; //
     aout_buf_p = aout_buf;
     for (n = 0; n < 160; n++) {
-        *aout_buf_p = (float)(amplitude * (sinf((cur_mp->swn) * step1) / 2.0f + sinf((cur_mp->swn) * step2) / 2.0f));
+        *aout_buf_p = amplitude * (sinf((cur_mp->swn) * step1) / 2.0f + sinf((cur_mp->swn) * step2) / 2.0f);
         *aout_buf_p = *aout_buf_p / 6.0f;
         aout_buf_p++;
         cur_mp->swn++;
@@ -1019,7 +1021,7 @@ mbe_synthesizeSpeechf(float* aout_buf, mbe_parms* cur_mp, mbe_parms* prev_mp, in
     // update phil from eq 139,140
     for (l = 1; l <= 56; l++) {
         cur_mp->PSIl[l] = prev_mp->PSIl[l] + ((pw0 + cw0) * ((float)(l * N) / (float)2));
-        if (l <= (int)(cur_mp->L / 4)) {
+        if (l <= (cur_mp->L / 4)) {
             cur_mp->PHIl[l] = cur_mp->PSIl[l];
         } else {
             cur_mp->PHIl[l] = cur_mp->PSIl[l] + ((numUv * mbe_rand_phase()) / cur_mp->L);
@@ -1074,7 +1076,7 @@ mbe_synthesizeSpeechf(float* aout_buf, mbe_parms* cur_mp, mbe_parms* prev_mp, in
             float sd_cur, cd_cur;
             mbe_sincosf(cw0l, &sd_cur, &cd_cur);
             float s_cur, c_cur;
-            mbe_sincosf(cur_mp->PHIl[l] - cw0l * (float)N, &s_cur, &c_cur);
+            mbe_sincosf(cur_mp->PHIl[l] - (cw0l * (float)N), &s_cur, &c_cur);
             /* Precompute unvoiced oscillator steps for previous (pw0) */
             float sd_u[64], cd_u[64];
             float su[64], cu[64];
@@ -1110,7 +1112,7 @@ mbe_synthesizeSpeechf(float* aout_buf, mbe_parms* cur_mp, mbe_parms* prev_mp, in
             float s_prev, c_prev;
             mbe_sincosf(prev_mp->PHIl[l], &s_prev, &c_prev);
             float s_cur, c_cur;
-            mbe_sincosf(cur_mp->PHIl[l] - cw0l * (float)N, &s_cur, &c_cur);
+            mbe_sincosf(cur_mp->PHIl[l] - (cw0l * (float)N), &s_cur, &c_cur);
             for (n = 0; n < N; n += 4) {
                 /* voiced prev */
                 mbe_add_voiced_block4(Ss, Ws + n + N, amp_prev, &c_prev, &s_prev, sd_prev, cd_prev);

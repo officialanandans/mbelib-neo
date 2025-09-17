@@ -13,6 +13,9 @@ Checks: >
   -readability-non-const-parameter,
   -bugprone-easily-swappable-parameters,
   -bugprone-narrowing-conversions
-WarningsAsErrors: ''
+WarningsAsErrors: 'clang-analyzer-*,bugprone-*'
 HeaderFilterRegex: '^(src|include)/'
 FormatStyle: none
+CheckOptions:
+  - key: readability-function-cognitive-complexity.FunctionCognitiveComplexityThreshold
+    value: '80'

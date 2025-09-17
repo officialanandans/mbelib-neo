@@ -27,8 +27,8 @@
  *       not installed and not part of the public API.
  */
 
-#ifndef _MBELIB_CONST_H
-#define _MBELIB_CONST_H
+#ifndef MBEINT_MBELIB_CONST_H
+#define MBEINT_MBELIB_CONST_H
 
 /*
  * Speech Synthesis Window 8k version

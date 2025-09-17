@@ -28,8 +28,8 @@
  *       so they remain translation‑unit local wherever included.
  */
 
-#ifndef _IMBE7200X4400_CONST_H
-#define _IMBE7200X4400_CONST_H
+#ifndef MBEINT_IMBE7200X4400_CONST_H
+#define MBEINT_IMBE7200X4400_CONST_H
 
 // Suppress nested-initializer brace warnings for large lookup tables below.
 // These tables intentionally use flattened initializers for readability and

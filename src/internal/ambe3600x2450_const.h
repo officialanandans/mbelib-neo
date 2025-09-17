@@ -28,8 +28,8 @@
  *       must not be consumed directly by library users.
  */
 
-#ifndef _AMBE3600x2450_CONST_H
-#define _AMBE3600x2450_CONST_H
+#ifndef MBEINT_AMBE3600X2450_CONST_H
+#define MBEINT_AMBE3600X2450_CONST_H
 
 /*
  * Fundamental Frequency Quanitization Table
@@ -759,4 +759,4 @@ static const float AmbeHOCb8[8][4] = {
     {-0.441995, 0.038159, 0.022784, 0.003943},   {-0.155951, 0.032467, 0.145309, -0.041725},
     {-0.149182, -0.223356, -0.065793, 0.075016}, {0.096949, -0.096400, 0.083194, 0.049306}};
 
-#endif /* _AMBE3600x2450_CONST_H */
+#endif /* MBEINT_AMBE3600X2450_CONST_H */

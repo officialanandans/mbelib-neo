@@ -20,8 +20,8 @@
  * @brief Internal generator matrices and tables for Golay/Hamming ECC.
  */
 
-#ifndef _ECC_H
-#define _ECC_H
+#ifndef MBEINT_ECC_CONST_H
+#define MBEINT_ECC_CONST_H
 
 /* Declarations only; definitions live in src/ecc/ecc_const.c. */
 extern const int hammingGenerator[4];
@@ -29,4 +29,4 @@ extern const int imbe7100x4400hammingGenerator[4];
 extern const int golayGenerator[12];
 extern const int golayMatrix[2048];
 
-#endif /* _ECC_H */
+#endif /* MBEINT_ECC_CONST_H */

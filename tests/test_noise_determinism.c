@@ -51,12 +51,21 @@ main(void) {
     mbe_setThreadRngSeed(0xA5A5A5u);
     fill_params_unvoiced(&cur, &prev);
     mbe_synthesizeSpeechf(out2, &cur, &prev, 8);
-    assert(memcmp(out1, out2, sizeof(out1)) == 0);
+    for (int i = 0; i < 160; ++i) {
+        assert(out1[i] == out2[i]);
+    }
 
     // Third run with a different seed -> expect difference (very high probability)
     mbe_setThreadRngSeed(0x5A5A5Au);
     fill_params_unvoiced(&cur, &prev);
     mbe_synthesizeSpeechf(out3, &cur, &prev, 8);
-    assert(memcmp(out1, out3, sizeof(out1)) != 0);
+    int diff = 0;
+    for (int i = 0; i < 160; ++i) {
+        if (out1[i] != out3[i]) {
+            diff = 1;
+            break;
+        }
+    }
+    assert(diff != 0);
     return 0;
 }

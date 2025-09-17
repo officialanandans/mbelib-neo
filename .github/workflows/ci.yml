@@ -67,16 +67,23 @@ jobs:
     steps:
       - uses: actions/checkout@v5.0.0
       - name: Install clang-tidy (latest)
-        run: sudo apt-get update && sudo apt-get install -y clang-tidy
+        run: sudo apt-get update && sudo apt-get install -y clang-tidy ripgrep
       - name: Configure (dev-debug preset)
         run: cmake --preset dev-debug
       - name: Run clang-tidy
         run: |
-          files=$(git ls-files '*.c' ':!:build/**')
+          # Analyze both sources and headers; headers are also checked via header-filter from TUs
+          files=$(git ls-files '*.c' '*.h' ':!:build/**')
           if [ -z "$files" ]; then echo "No C files to analyze"; exit 0; fi
           echo "Analyzing: $files"
-          # Use project config; do not force warnings as errors here
-          clang-tidy -p build/dev-debug $files
+          # Run clang-tidy using project config
+          clang-tidy -p build/dev-debug $files 2>&1 | tee clang-tidy.log || true
+          # Fail the job if any analyzer/bugprone diagnostics appear
+          if rg -n "\[(clang-analyzer|bugprone).*\]$" clang-tidy.log; then
+            echo "clang-tidy found analyzer/bugprone issues (treated as errors)." >&2
+            exit 1
+          fi
+          echo "clang-tidy clean for analyzer/bugprone checks."
 
   install-and-consume:
     needs: [format-check, clang-tidy]

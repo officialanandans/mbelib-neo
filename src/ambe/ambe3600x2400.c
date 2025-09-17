@@ -172,6 +172,8 @@ mbe_decodeAmbe2400Parms(char* ambe_d, mbe_parms* cur_mp, mbe_parms* prev_mp) {
         b1 |= ambe_d[10] << 1;                                               //t1 2   b verified
         b1 |= ambe_d[11];                                                    //t0 1   a verified
 
+        /* Tone volume bits were only used for debugging; avoid dead store when not used. */
+#ifdef AMBE_DEBUG
         b2 = 0;
         b2 |= ambe_d[12] << 7; //v7 128 h verified
         b2 |= ambe_d[13] << 6; //v6 64  g verified
@@ -181,23 +183,21 @@ mbe_decodeAmbe2400Parms(char* ambe_d, mbe_parms* cur_mp, mbe_parms* prev_mp) {
         b2 |= ambe_d[44] << 2; //v2 4   c guess based on data
         b2 |= ambe_d[45] << 1; //v1 2   b guess based on data
         b2 |= ambe_d[17];      //v0 1   a guess based on data
-        // the order of the last 3 bits may really be 17,44,45 not 44,45,17 as above
+                               // the order of the last 3 bits may really be 17,44,45 not 44,45,17 as above
+                               // fprintf(stderr,"Tone volume: %d; ", b2);
+#endif
 
-        // fprintf(stderr,"Tone volume: %d; ", b2);
-        if (b1 < 5) {
-            // fprintf(stderr, "index: %d, was <5, invalid!\n", b1);
-            silence = 1;
-        } else if ((b1 >= 5) && (b1 <= 122)) {
+        /* Collapse repeated branches: valid single tone returns; dual-tone falls through; others -> silence. */
+        if ((b1 >= 5) && (b1 <= 122)) {
             // fprintf(stderr, "index: %d, Single tone hz: %f\n", b1, (float)b1*31.25);
-            return (b1); //use the return value to play a single frquency valid tone
-        } else if ((b1 > 122) && (b1 < 128)) {
-            // fprintf(stderr, "index: %d, was >122 and <128, invalid!\n", b1);
-            silence = 1;
-        } else if ((b1 >= 128) && (b1 <= 163)) {
+            return (b1); // use the return value to play a single frequency valid tone
+        }
+
+        if ((b1 >= 128) && (b1 <= 163)) {
             // fprintf(stderr, "index: %d, Dual tone\n", b1);
             // note: dual tone index is different on ambe(dstar) and ambe2+
         } else {
-            // fprintf(stderr, "index: %d, was >163, invalid!\n", b1);
+            // All other indices are treated as silence
             silence = 1;
         }
 
@@ -206,7 +206,6 @@ mbe_decodeAmbe2400Parms(char* ambe_d, mbe_parms* cur_mp, mbe_parms* prev_mp) {
             fprintf(stderr, "Silence Frame\n");
 #endif
             cur_mp->w0 = ((float)2 * M_PI) / (float)32;
-            f0 = (float)1 / (float)32;
             L = 14;
             cur_mp->L = 14;
             for (l = 1; l <= L; l++) {
@@ -517,7 +516,7 @@ mbe_decodeAmbe2400Parms(char* ambe_d, mbe_parms* cur_mp, mbe_parms* prev_mp) {
         Sum42 += Tl[l];
     }
     Sum42 = Sum42 / (float)cur_mp->L;
-    BigGamma = cur_mp->gamma - ((float)0.5f * log2f((float)cur_mp->L)) - Sum42;
+    BigGamma = cur_mp->gamma - (0.5f * log2f((float)cur_mp->L)) - Sum42;
     //BigGamma=cur_mp->gamma - ((float)0.5 * log((float)cur_mp->L)) - Sum42;
 
     // Part 3

@@ -182,8 +182,7 @@ mbe_decodeAmbe2450Parms(char* ambe_d, mbe_parms* cur_mp, mbe_parms* prev_mp) {
         return (7);
     }
 
-    else if (
-        (b0 >= 120)
+    if ((b0 >= 120)
         && (b0
             <= 123)) // if w0 bits are 1111000, 1111001, 1111010 or 1111011, frame is erasure --  this is not entirely correct, tones are identified as erasures here
     {
@@ -191,7 +190,8 @@ mbe_decodeAmbe2450Parms(char* ambe_d, mbe_parms* cur_mp, mbe_parms* prev_mp) {
         fprintf(stderr, "Erasure Frame b0 = %d\n", b0);
 #endif
         return (2);
-    } else if ((b0 == 124) || (b0 == 125)) // if w0 bits are 1111100 or 1111101, frame is silence
+    }
+    if ((b0 == 124) || (b0 == 125)) // if w0 bits are 1111100 or 1111101, frame is silence
     {
 #ifdef AMBE_DEBUG
         fprintf(stderr, "Silence Frame\n");
@@ -206,7 +206,7 @@ mbe_decodeAmbe2450Parms(char* ambe_d, mbe_parms* cur_mp, mbe_parms* prev_mp) {
         }
     }
     //the below check doesn't seem to be entirely representative of all tones (could be entirely wrong)
-    else if ((b0 == 126) || (b0 == 127)) // if w0 bits are 1111110 or 1111111, frame is tone
+    if ((b0 == 126) || (b0 == 127)) // if w0 bits are 1111110 or 1111111, frame is tone
     {
 #ifdef AMBE_DEBUG
         fprintf(stderr, "Tone Frame 1\n");
@@ -504,7 +504,7 @@ mbe_decodeAmbe2450Parms(char* ambe_d, mbe_parms* cur_mp, mbe_parms* prev_mp) {
         Sum42 += Tl[l];
     }
     Sum42 = Sum42 / (float)cur_mp->L;
-    BigGamma = cur_mp->gamma - ((float)0.5f * log2f((float)cur_mp->L)) - Sum42;
+    BigGamma = cur_mp->gamma - (0.5f * log2f((float)cur_mp->L)) - Sum42;
     //BigGamma=cur_mp->gamma - ((float)0.5 * log((float)cur_mp->L)) - Sum42;
 
     // Part 3

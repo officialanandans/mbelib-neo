@@ -134,7 +134,7 @@ mbe_eccImbe7100x4400Data(char imbe_fr[7][24], char* imbe_d) {
     int i, j, errs;
     char *imbe, gin[23], gout[23], hin[15], hout[15];
 
-    errs = 0;
+    /* initialize errs implicitly via first ECC call below */
     imbe = imbe_d;
 
     // just copy C0
@@ -209,7 +209,7 @@ mbe_demodulateImbe7100x4400Data(char imbe[7][24]) {
     for (i = 1; i < 101; i++) {
         pr[i] = (173 * pr[i - 1]) + 13849 - (65536 * (((173 * pr[i - 1]) + 13849) / 65536));
     }
-    seed = pr[100];
+    /* retain pr[100] only for legacy reference; 'seed' not used afterward */
     for (i = 1; i < 101; i++) {
         pr[i] >>= 15; /* normalize to {0,1} cheaply */
     }

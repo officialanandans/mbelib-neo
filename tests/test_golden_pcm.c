@@ -84,9 +84,11 @@ main(void) {
     mbe_setThreadRngSeed(0xC0FFEEu);
     fill_params(&cur, &prev);
     mbe_synthesizeSpeechf(out_f2, &cur, &prev, 8);
-    if (memcmp(out_f, out_f2, sizeof(out_f)) != 0) {
-        fprintf(stderr, "determinism failure: float buffers differ across runs\n");
-        return 1;
+    for (int i = 0; i < 160; ++i) {
+        if (out_f[i] != out_f2[i]) {
+            fprintf(stderr, "determinism failure: float sample %d differs across runs\n", i);
+            return 1;
+        }
     }
     mbe_floattoshort(out_f2, out_s2);
     if (memcmp(out_s, out_s2, sizeof(out_s)) != 0) {
