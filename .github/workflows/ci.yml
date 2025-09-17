@@ -36,6 +36,9 @@ jobs:
       - name: Build (asan-ubsan-debug)
         run: cmake --build --preset asan-ubsan-debug --parallel
       - name: Test (asan-ubsan-debug)
+        env:
+          ASAN_OPTIONS: detect_leaks=1:halt_on_error=1
+          UBSAN_OPTIONS: print_stacktrace=1:halt_on_error=1
         run: ctest --preset asan-ubsan-debug -V
 
   format-check:
